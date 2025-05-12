@@ -11,7 +11,7 @@ const sendEmailForAddUser = async (email, password) => {
   });
 
   const mailOptions = {
-    from: `"CTU Admin Team" <${process.env.GMAIL_ID}>`, // More professional from field
+    from: `"Medical History Tracker Admin Team" <${process.env.GMAIL_ID}>`, // More professional from field
     to: email,
     subject: "User Account Successfully Created",
     html: `
@@ -23,7 +23,7 @@ const sendEmailForAddUser = async (email, password) => {
         <p>If you have any questions or need further assistance, feel free to contact support.</p>
         <br>
         <p>Best regards,</p>
-        <p><strong>CTU Admin Team</strong></p>
+        <p><strong>Medical History Tracker Admin Team</strong></p>
       </div>
     `,
   };

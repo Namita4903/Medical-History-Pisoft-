@@ -290,7 +290,7 @@ const Register = () => {
             <img
               src={RegisterIllustration}
               alt="Register Illustration"
-              className="login-illustration"
+              className="register-illustration "
             />
           </div>
         </div>

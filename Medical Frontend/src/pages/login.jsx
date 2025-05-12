@@ -148,6 +148,10 @@
 // };
 
 // export default Login;
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Spin, notification } from 'antd';
@@ -189,10 +193,10 @@ const Login = () => {
         localStorage.setItem('Username', response.data.userName);
         localStorage.setItem('userId', response.data.userId);
         localStorage.setItem('jwtToken', response.data.jwtToken);
-        localStorage.setItem('userEmail', response.data.email);
+        localStorage.setItem('userEmail', response.data.userEmail);
         localStorage.setItem('userRole', response.data.role);
         window.dispatchEvent(new Event("authChange"));
-        sessionStorage.setItem('email', response.data.email);
+        // sessionStorage.setItem('email', response.data.userEmail);
 
         setTimeout(() => {
           setLoading(false);

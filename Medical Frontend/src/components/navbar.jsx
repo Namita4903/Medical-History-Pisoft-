@@ -23,7 +23,9 @@ const Navbar = () => {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("Username");
     localStorage.removeItem("userId");
-    sessionStorage.removeItem("email");
+    localStorage.removeItem("clientSecret");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
 
     setIsLoggedIn(false);
     window.dispatchEvent(new Event("authChange")); 

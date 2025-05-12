@@ -22,7 +22,7 @@ const report = () => {
   console.log(reports)
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-const userId=localStorage.getItem("userId")
+const userEmail=localStorage.getItem("userEmail")
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -95,7 +95,12 @@ const userId=localStorage.getItem("userId")
 
   const fetchReports = async () => {
     try {
-      const res = await axios.get(`http://localhost:5001/api/auth/getReportByPatient/${userId}`);
+      const res = await axios.get(
+        `http://localhost:5001/api/auth/getSingleReportsPatient`,
+        {
+          params: { email:userEmail }, // Send the email as a query parameter
+        }
+      );
       setReports(res.data.reports || []);
     } catch (err) {
       console.error("Error fetching reports:", err);

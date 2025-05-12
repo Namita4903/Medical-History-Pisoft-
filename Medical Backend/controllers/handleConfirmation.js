@@ -1,8 +1,8 @@
 const userModel = require("../models/user.model");
 
 const handleConfirmation = async (req, res) => {
-  const {  doctorId, token } = req.body;
-    const email = "amrit0207232@gmail.com"
+  const {  doctorId, email} = req.body;
+  console.log(req.body)
   try {
     const user = await userModel.findOne({ email });
     if (!user) return res.status(404).send("Patient not found.");

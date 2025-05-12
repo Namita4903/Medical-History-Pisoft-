@@ -2,7 +2,7 @@ const Report = require("../../models/report.model");
 
 const report = async (req, res, next) => {
   try {
-    const { title, description, date, image, uploadedBy } = req.body;
+    const { title, description, date, image, uploadedOfPatient,uploadedByDoctor } = req.body;
 
     // Validation (simple check)
     if (!title || !description || !date || !image) {
@@ -21,7 +21,8 @@ const report = async (req, res, next) => {
       description,
       date,
       image,
-      uploadedBy,
+      uploadedByDoctor,
+      uploadedOfPatient
     });
 
     await newReport.save();

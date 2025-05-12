@@ -1,110 +1,91 @@
-// import React, { useState } from "react";
-// import "../index.css";
-
-// import Navbar from '../../src/components/navbar';
-// import Footer from '../../src/components/footer';
-// const Doctor = () => {
-//   const [email, setEmail] = useState("");
-//   const [message, setMessage] = useState("");
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-  
-//     const doctorId = localStorage.getItem('userId'); 
-//     const role = localStorage.getItem('userRole'); 
-  
-//     try {
-//       const response = await fetch("http://localhost:5001/api/doctor/request-access", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ email, doctorId,role }),
-//       });
-  
-//       if (response.ok) {
-//         setMessage("Confirmation email sent successfully!");
-//         setEmail("");
-//       } else {
-//         setMessage("Failed to send email. Please try again.");
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       setMessage("Server error. Try again later.");
-//     }
-//   };
-  
-//   return (
-//     <div>
-//       <Navbar/>
-//       <section className="hero-section">
-//         <div className="hero-content">
-//           <h1>Doctor Portal</h1>
-//           <p>Send a confirmation email to your patient directly from here.</p>
-//         </div>
-//       </section>
-
-//       <section className="container" style={{ marginTop: "40px" }}>
-//         <form onSubmit={handleSubmit} className="p-6 bg-white rounded-xl shadow-md max-w-md mx-auto">
-//           <label className="block text-lg font-medium text-gray-700 mb-2">Patient Email:</label>
-//           <input
-//             type="email"
-//             required
-//             placeholder="Enter patient's email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             className="w-full p-3 border border-gray-300 rounded mb-4"
-//           />
-//           <button type="submit" className="btn-primary w-full text-center">
-//             Send Confirmation
-//           </button>
-//           {message && <p className="mt-4 text-center text-green-700 font-semibold">{message}</p>}
-//         </form>
-//       </section>
-//      <Footer/>
-//     </div>
-//   );
-// };
-// export default Doctor;
-
-
-
-
 import React, { useState, useEffect } from "react";
 import "../index.css";
 import axios from "axios";
-import { notification, Table, Modal, Button, Input, DatePicker } from "antd";
+import {
+  notification,
+  Table,
+  Modal,
+  Button,
+  Input,
+  DatePicker,
+  Image,
+  Empty,
+} from "antd";
+import Navbar from "../../src/components/navbar";
+import Footer from "../../src/components/footer";
 import moment from "moment";
-
-import Navbar from '../../src/components/navbar';
-import Footer from '../../src/components/footer';
 
 const Doctor = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [users, setUsers] = useState([]);
+  const [reportEmail, setReportEmail] = useState("");
+  const [selectedPatientEmail, setSelectedPatientEmail] = useState("");
+  console.log(selectedPatientEmail);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    uploadedByDoctor: "",
+    uploadedOfPatient: "",
+    media: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [api] = notification.useNotification();
+  const [reports, setReports] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
-  const users = [
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
-    { id: 3, name: "David Johnson", email: "david@example.com" },
-  ];
+  const userId = localStorage.getItem("userId");
+  const doctorEmail = localStorage.getItem("userEmail");
 
-  const handleAddReport = () => {
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (err) => reject(err);
+    });
+
+  const handleAddReport = (user) => {
+    setReportEmail(user.email);
     setIsModalVisible(true);
   };
 
-  const handleViewReport = (userId) => {
-    console.log("View Report for:", userId);
+  const handleViewReport = async (user) => {
+    setOpen(true);
+
+    setSelectedPatientEmail(user.email);
+    try {
+      const response = await axios.get(
+        `http://localhost:5001/api/auth/getSingleReportsPatient`,
+        {
+          params: { email: selectedPatientEmail }, // Send the email as a query parameter
+        }
+      );
+      setReports(response.data.reports); // Set the reports to the state
+
+      setReports(res.data.reports || []);
+      setOpen(true);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    }
   };
 
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
-    const doctorId = localStorage.getItem('userId');
-    const role = localStorage.getItem('userRole');
+    const doctorId = localStorage.getItem("userId");
+    const role = localStorage.getItem("userRole");
 
     try {
-      const response = await fetch("http://localhost:5001/api/doctor/request-access", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, doctorId, role }),
-      });
+      const response = await fetch(
+        "http://localhost:5001/api/doctor/request-access",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, doctorId, role }),
+        }
+      );
 
       if (response.ok) {
         setMessage("Confirmation email sent successfully!");
@@ -117,30 +98,6 @@ const Doctor = () => {
       setMessage("Server error. Try again later.");
     }
   };
-
-  // -------------- Report Modal Logic Starts Here -------------- //
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    date: "",
-    uploadedBy: "",
-    media: null,
-  });
-  const [loading, setLoading] = useState(false);
-  const [api] = notification.useNotification();
-  const [reports, setReports] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
-  const userId = localStorage.getItem("userId");
-  const userEmail = localStorage.getItem("userEmail");
-
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (err) => reject(err);
-    });
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -167,43 +124,61 @@ const Doctor = () => {
         title: formData.title,
         description: formData.description,
         date: formData.date,
-        uploadedBy: formData.uploadedBy,
+        uploadedByDoctor: doctorEmail,
+        uploadedOfPatient: reportEmail,
         image: formData.media,
       };
 
-      const response = await axios.post("http://localhost:5001/api/auth/report", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await axios.post(
+        "http://localhost:5001/api/auth/report",
+        payload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       if (response.data.success) {
         api.success({ message: "Success", description: response.data.message });
-        setFormData({ title: "", description: "", date: "", uploadedBy: "", media: null });
-        fetchReports();
+        setFormData({
+          title: "",
+          description: "",
+          date: "",
+          uploadedByDoctor: "",
+          uploadedOfPatient: "",
+          media: null,
+        });
         setIsModalVisible(false);
       } else {
         api.error({ message: "Failed", description: response.data.message });
       }
     } catch (err) {
       console.error(err);
-      api.error({ message: "Error", description: "An error occurred while submitting the report." });
+      api.error({
+        message: "Error",
+        description: "An error occurred while submitting the report.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchReports = async () => {
+  const fetchUsersByDoctor = async () => {
     try {
-      const res = await axios.get(`http://localhost:5001/api/auth/getReportByDoctor/${userId}`);
-      setReports(res.data.reports || []);
+      const res = await axios.get(
+        `http://localhost:5001/api/auth/getUsersByDoctor`,
+        {
+          params: { doctorEmail },
+        }
+      );
+      setUsers(res.data);
     } catch (err) {
-      console.error("Error fetching reports:", err);
+      console.error("Error fetching users:", err);
     }
   };
 
   useEffect(() => {
-    fetchReports();
+    fetchUsersByDoctor();
   }, []);
-  // -------------- Report Modal Logic Ends Here -------------- //
 
   return (
     <div>
@@ -215,7 +190,6 @@ const Doctor = () => {
         </div>
       </section>
 
-      {/* Dashboard Table */}
       <section className="container my-10 px-4">
         <h2 className="text-2xl font-bold mb-4">Patient List</h2>
         <div className="overflow-x-auto">
@@ -229,18 +203,18 @@ const Doctor = () => {
             </thead>
             <tbody>
               {users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 border">{user.name}</td>
+                <tr key={user._id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border">{user.username}</td>
                   <td className="px-4 py-2 border">{user.email}</td>
                   <td className="px-4 py-2 border text-center space-x-2">
                     <button
-                      onClick={() => handleAddReport(user.id)}
+                      onClick={() => handleAddReport(user)}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       Add Report
                     </button>
                     <button
-                      onClick={() => handleViewReport(user.id)}
+                      onClick={() => handleViewReport(user)}
                       className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                     >
                       View Report
@@ -253,7 +227,6 @@ const Doctor = () => {
         </div>
       </section>
 
-      {/* Email Confirmation Form */}
       <section className="container my-10 px-4">
         <form
           onSubmit={handleSubmitEmail}
@@ -278,14 +251,15 @@ const Doctor = () => {
             Send Confirmation
           </button>
           {message && (
-            <p className="mt-4 text-center text-green-700 font-semibold">{message}</p>
+            <p className="mt-4 text-center text-green-700 font-semibold">
+              {message}
+            </p>
           )}
         </form>
       </section>
 
-      {/* Modal for Report Upload */}
       <Modal
-        title="Upload Medical Report (PDF)"
+        title="Upload Medical Report"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
@@ -316,26 +290,80 @@ const Doctor = () => {
             placeholder="Select Date"
           />
           <Input
-            type="text"
-            name="uploadedBy"
-            value={userEmail}
-            disabled
-            onChange={handleChange}
-            placeholder="Uploaded By (email)"
-            required
-            style={{ marginBottom: "1rem" }}
-          />
-          <Input
             type="file"
-            accept="application/pdf"
             onChange={handleFileChange}
+            accept="image/*,application/pdf"
             required
             style={{ marginBottom: "1rem" }}
           />
-          <Button type="primary" htmlType="submit" loading={loading}>
-            {loading ? "Uploading..." : "Submit Report"}
+          <Button htmlType="submit" type="primary" loading={loading} block>
+            Upload Report
           </Button>
         </form>
+      </Modal>
+
+      <Modal
+        title={`Reports for ${selectedPatientEmail}`}
+        open={isOpen}
+        onCancel={() => setOpen(false)}
+        footer={null}
+        width={800}
+      >
+        {reports?.length === 0 ? (
+          <Empty description="No reports uploaded yet." />
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 16,
+            }}
+          >
+            {reports.map((report, index) => (
+              <div
+                key={index}
+                style={{
+                  border: "1px solid #eaeaea",
+                  borderRadius: 8,
+                  padding: 12,
+                }}
+              >
+                {report.image?.startsWith("data:") ? (
+                  
+                  <iframe
+                    src={report.image} // Assuming the report.image contains the PDF URL or base64 PDF string
+                    title={`Report ${index + 1}`}
+                    style={{
+                      width: "100%",
+                      height: 400,
+                      borderRadius: 4,
+                    }}
+                  />
+                ) : (
+                  <p>Unsupported file type</p>
+                )}
+                <div
+                  style={{
+                    marginTop: 8,
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span style={{ fontSize: 12, color: "#555" }}>
+                    {report.title}
+                  </span>
+                  <a
+                    href={report.image}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </Modal>
 
       <Footer />

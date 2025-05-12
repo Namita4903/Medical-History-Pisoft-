@@ -19,7 +19,10 @@ const ReportSchema = new Schema({
     type: String, // Base64 or image URL
     required: true,
   },
-  uploadedBy: {
+  uploadedByDoctor: {
+    type: String,
+  },
+  uploadedOfPatient: {
     type: String,
   },
   uploadedAt: {
