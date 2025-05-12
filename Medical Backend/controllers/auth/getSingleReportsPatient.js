@@ -2,7 +2,8 @@ const reportModel = require("../../models/report.model");
 
 const getSingleReportsPatient = async (req, res) => {
   try {
-    const userEmail = "amrit0207232@gmail.com"; // Change as needed or use req.query.email
+     const userEmail = req.query.email; // Change as needed or use req.query.email
+     console.log("user email is ... to fetch report",userEmail)
 
     if (!userEmail) {
       return res.status(400).json({

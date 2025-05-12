@@ -56,16 +56,17 @@ const Doctor = () => {
     setOpen(true);
 
     setSelectedPatientEmail(user.email);
+    console.log("selected email is...",selectedPatientEmail)
     try {
       const response = await axios.get(
         `http://localhost:5001/api/auth/getSingleReportsPatient`,
         {
-          params: { email: selectedPatientEmail }, // Send the email as a query parameter
+          params: { email: user.email }, // Send the email as a query parameter
         }
       );
-      setReports(response.data.reports); // Set the reports to the state
+      setReports(response.data.reports || []); // Set the reports to the state
 
-      setReports(res.data.reports || []);
+      // setReports(res.data.reports || []);
       setOpen(true);
     } catch (err) {
       console.error("Error fetching reports:", err);
