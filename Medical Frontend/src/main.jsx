@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
   import Login from "./pages/login";
   import Register from "./pages/register";
  import Dashboard from "./pages/dashboard";
- import DoctorDashboard from "./pages/doctorDashboard";
+//  import DoctorDashboard from "./pages/doctorDashboard";
   import Contact from "./pages/contact";
   import Doctor from "./pages/doctor";
   import Report from "./pages/report";
@@ -65,7 +65,7 @@ ReactDOM.createRoot(root).render(
    <Route path="/login" element={<Login />} /> 
    <Route path="/register" element={<GoogleWrapper />} /> 
        <Route path="/dashboard" element={<Dashboard />} />  
-       <Route path="/doctorDashboard" element={<DoctorDashboard />} />  
+       {/* <Route path="/doctorDashboard" element={<DoctorDashboard />} />   */}
       <Route path="/contact" element={<Contact />} />
       <Route path="/report" element={<Report />} /> 
       <Route path="/profile" element={<Profile/>}/>

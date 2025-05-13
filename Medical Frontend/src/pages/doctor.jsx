@@ -56,7 +56,7 @@ const Doctor = () => {
     setOpen(true);
 
     setSelectedPatientEmail(user.email);
-    console.log("selected email is...",selectedPatientEmail)
+   
     try {
       const response = await axios.get(
         `http://localhost:5001/api/auth/getSingleReportsPatient`,

@@ -222,7 +222,7 @@
     background: #83c5be;
     border-radius: 10px;
     text-align: center;
-    animation: pulse 2s infinite ease-in-out;
+    /* animation: pulse 2s infinite ease-in-out; */
 }
 
 .subscription-box h2 {

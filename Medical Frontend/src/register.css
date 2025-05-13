@@ -1152,7 +1152,7 @@ body {
   font-size: 1rem;
   font-weight: 600;
   transition: background 0.3s, transform 0.2s;
-  animation: pulse 2s infinite ease-in-out;
+  /* animation: pulse 2s infinite ease-in-out; */
 }
 
 .login-form .button:hover {

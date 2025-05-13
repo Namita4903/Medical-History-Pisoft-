@@ -32,20 +32,13 @@ const Dashboard = () => {
         cartItems: cart,
       });
   
-      const clientSecret = response.data.clientSecret;
-  
-      if (clientSecret) {
-        localStorage.setItem("clientSecret", clientSecret);  // or pass via state
-        navigate("/payment");
-      } else {
-        console.error("No client secret received");
-      }
+      console.log("Checkout session response:", response);
+      // window.location.href = response.data.url;
     } catch (error) {
       console.error("Payment error:", error);
     }
   };
   
-
   const handleMedicalRecordsClick = () => {
     navigate("/report");
   };
@@ -91,16 +84,16 @@ const Dashboard = () => {
             </div>
             <div className="card">
               <h3>🩺 Doctors</h3>
-              <p>Find and connect with healthcare professionals.</p>
+              <p>Connect with healthcare professionals.</p>
             </div>
             <div className="card">
               <h3>📅 Appointments</h3>
               <p>Check your upcoming doctor visits.</p>
             </div>
-            <div className="card">
+           {/*  <div className="card">
               <h3>💊 Prescriptions</h3>
               <p>View and track your prescribed medicines.</p>
-            </div>
+            </div> */}
           </div>
         </main>
       </div>
