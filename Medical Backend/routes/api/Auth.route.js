@@ -17,6 +17,9 @@ const getPaymentStatus = require("../../controllers/auth/getPayment.js");
 const getReportByPatient = require("../../controllers/auth/getReportByPatient.js");
 const getUsersByDoctor = require("../../controllers/auth/getUsersByDoctor.js");
 const getSingleReportsPatient = require("../../controllers/auth/getSingleReportsPatient.js");
+const adminLogin = require("../../controllers/auth/adminLogin.js");
+
+
 
 
 
@@ -36,5 +39,6 @@ route.get("/getUsers",getUser);
 route.post("/addUser",addUser); 
 route.put("/updateUser/:id", updateUser);
 route.delete("/deleteUser/:id", deleteUser);
+route.post("/admin/login", adminLogin);
 
 module.exports = route;
