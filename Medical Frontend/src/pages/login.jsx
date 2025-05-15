@@ -194,6 +194,7 @@ const Login = () => {
         localStorage.setItem('userId', response.data.userId);
         localStorage.setItem('jwtToken', response.data.jwtToken);
         localStorage.setItem('userEmail', response.data.userEmail);
+        localStorage.setItem('userPhone', response.data.userPhone);
         localStorage.setItem('userRole', response.data.role);
         window.dispatchEvent(new Event("authChange"));
         // sessionStorage.setItem('email', response.data.userEmail);

@@ -9,6 +9,7 @@ const routes = require("./routes")
 const contactRoute = require("./routes/api/contact.route");
 const doctorAccessRoute=require("./routes/api/doctorAccess.route");
 
+
 // const uploadRoutes=require("./routes/api/upload");
 const path = require('path');
 // const ReportModel= require("./models/report.model");
@@ -27,7 +28,7 @@ backend.use(cors({
 
 backend.use(routes);
 backend.use("/api/contact", contactRoute);
-// backend.use("/api/doctor", doctorAccessRoute);
+ backend.use("/api/doctor", doctorAccessRoute);
 // backend.use("/api",uploadRoutes);
 // backend.use('/uploads', express.static('uploads'));
 

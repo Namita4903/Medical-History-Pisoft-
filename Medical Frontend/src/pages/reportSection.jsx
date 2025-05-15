@@ -1,31 +1,24 @@
+// components/ReportSection.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { notification, Table, Modal, Button, Input, DatePicker } from "antd";
 import moment from "moment";
 
-import Navbar from "../../src/components/navbar";
-import Footer from "../../src/components/footer";
-
-
-const report = () => {
+const ReportSection = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     date: "",
     uploadedBy: "",
     media: null,
-     uploadedByDoctor: "",
-    uploadedOfPatient: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [api] = notification.useNotification();
   const [reports, setReports] = useState([]);
-  console.log(reports)
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-const userEmail=localStorage.getItem("userEmail")
-const userId=localStorage.getItem("userId")
+  const userEmail = localStorage.getItem("userEmail");
+
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -37,11 +30,10 @@ const userId=localStorage.getItem("userId")
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const base64 = await toBase64(file);
     const fullBase64 = `data:${file.type};base64,${base64.split(",")[1]}`;
     setFormData((prev) => ({ ...prev, media: fullBase64 }));
-  };const email = localStorage.getItem("userEmail")
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,43 +47,30 @@ const userId=localStorage.getItem("userId")
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const payload = {
-        _id:userId,
+        _id: "681c437f8a4cae9a938a870f", // Ideally dynamic
         title: formData.title,
         description: formData.description,
         date: formData.date,
-        uploadedOfPatient: formData.uploadedBy,
+        uploadedBy: formData.uploadedBy,
         image: formData.media,
-        uploadedOfPatient:userEmail
       };
 
       const response = await axios.post("http://localhost:5001/api/auth/report", payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (response.data.success) {
-        api.success({
-          message: "Success",
-          description: response.data.message,
-        });
+        api.success({ message: "Success", description: response.data.message });
         setFormData({ title: "", description: "", date: "", uploadedBy: "", media: null });
         fetchReports();
       } else {
-        api.error({
-          message: "Failed",
-          description: response.data.message,
-        });
+        api.error({ message: "Failed", description: response.data.message });
       }
     } catch (err) {
       console.error(err);
-      api.error({
-        message: "Error",
-        description: "An error occurred while submitting the report.",
-      });
+      api.error({ message: "Error", description: "An error occurred while submitting the report." });
     } finally {
       setLoading(false);
     }
@@ -99,12 +78,9 @@ const userId=localStorage.getItem("userId")
 
   const fetchReports = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5001/api/auth/getSingleReportsPatient`,
-        {
-          params: { email:userEmail }, // Send the email as a query parameter
-        }
-      );
+      const res = await axios.get(`http://localhost:5001/api/auth/getSingleReportsPatient`, {
+        params: { email: userEmail },
+      });
       setReports(res.data.reports || []);
     } catch (err) {
       console.error("Error fetching reports:", err);
@@ -143,11 +119,9 @@ const userId=localStorage.getItem("userId")
   ];
 
   return (
-    <>
-    <Navbar/>
-   
     <div className="report-form-container" style={{ padding: "2rem" }}>
-      <h2>Upload Medical Report (PDF)</h2>
+      {api}
+      <h2>Upload Medical Report</h2>
       <form onSubmit={handleSubmit} style={{ marginBottom: "2rem" }}>
         <Input
           type="text"
@@ -175,9 +149,8 @@ const userId=localStorage.getItem("userId")
         <Input
           type="text"
           name="uploadedBy"
-          value={email}
+          value={userEmail}
           disabled
-          onChange={handleChange}
           placeholder="Uploaded By (email or ID)"
           required
           style={{ marginBottom: "1rem" }}
@@ -217,14 +190,7 @@ const userId=localStorage.getItem("userId")
         )}
       </Modal>
     </div>
-    <Footer/>
-    </>
   );
 };
 
-export default report;
-
-
-
-
-
+export default ReportSection;

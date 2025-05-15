@@ -18,6 +18,9 @@ const getReportByPatient = require("../../controllers/auth/getReportByPatient.js
 const getUsersByDoctor = require("../../controllers/auth/getUsersByDoctor.js");
 const getSingleReportsPatient = require("../../controllers/auth/getSingleReportsPatient.js");
 const adminLogin = require("../../controllers/auth/adminLogin.js");
+const getAllowedDoctors = require("../../controllers/auth/getAllowedDoctors.js");
+const getPayment = require("../../controllers/auth/getPayment.js");
+
 
 
 
@@ -29,7 +32,7 @@ route.post("/login" , login);
 route.post("/report",report);
 route.post("/getUserReport",getUserReport);
 route.post("/google",googleLogin);
-route.post("/getPaymentStatus",getPaymentStatus);
+route.post("/getPayment",getPayment);
 route.get("/getReportByDoctor/:id",getReportsByDoctor);
 route.get("/getReportByPatient/:id",getReportByPatient);
 route.get("/getSingleReportsPatient",getSingleReportsPatient);
@@ -40,5 +43,7 @@ route.post("/addUser",addUser);
 route.put("/updateUser/:id", updateUser);
 route.delete("/deleteUser/:id", deleteUser);
 route.post("/admin/login", adminLogin);
+route.post("/getAllowedDoctors", getAllowedDoctors);
+
 
 module.exports = route;

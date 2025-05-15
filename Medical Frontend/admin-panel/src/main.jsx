@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Admin from "../src/page/admin";
-import Dashboard from '../src/page/dashboard';
+ import Dashboard from '../src/page/dashboard';
 import Doctors from "../src/page/doctors";
 import Users from "../src/page/users";
 import Login from "../src/page/login";
