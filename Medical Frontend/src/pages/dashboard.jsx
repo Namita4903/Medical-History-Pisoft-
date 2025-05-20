@@ -10,6 +10,8 @@ import Profile from "../assets/images/profile.png";
 const Dashboard = () => {
   const [enter, setEnter] = useState();
   const [doctorData, setDoctorData] = useState([]);
+  const [reportData, setReportData] = useState([]);
+  console.log(reportData,"reportData")
   const [showDoctorsTable, setShowDoctorsTable] = useState(false);
   const navigate = useNavigate();
 
@@ -65,29 +67,51 @@ const Dashboard = () => {
     setShowDoctorsTable((prev) => !prev);
   };
 
-  // New: Opens WhatsApp chat with doctor phone number
-const handleBookAppointment = (phone) => {
-  if (!phone) {
-    alert("Phone number is missing!");
-    return;
-  }
 
-  let formattedPhone = String(phone).replace(/\D/g, '');
+
+  // New: Opens WhatsApp chat with doctor phone number
+const handleBookAppointment = async (doc) => {
+console.log(doc)
+setReportData(doc)
+
+  let formattedPhone = String(doc?.phone).replace(/\D/g, '');
 
   if (!formattedPhone.startsWith("91") && formattedPhone.length === 10) {
     formattedPhone = "91" + formattedPhone;
   }
 
-  const whatsappUrl = `https://wa.me/${formattedPhone}`;
+  // Get user details from localStorage
+  const username = localStorage.getItem("Username");
+  const email = localStorage.getItem("userEmail");
+  const userId = localStorage.getItem("userId"); // Make sure this is set in localStorage after login/signup
 
-  const userConfirmed = window.confirm(
-    "You will now be redirected to WhatsApp to book your appointment. Make sure WhatsApp is installed or accessible on your device. Proceed?"
-  );
+  try {
+    // API call to log or send appointment data
+    const response = await axios.post("http://localhost:5001/api/auth/bookAppointment", {
+      username,
+      email,
+      userId,
+      doctorPhone: formattedPhone,
+      doctorEmail: reportData.email,
+    });
 
-  if (userConfirmed) {
-    window.open(whatsappUrl, "_blank");
+    console.log("Appointment API response:", response.data);
+
+    const whatsappUrl = `https://wa.me/${formattedPhone}`;
+
+    const userConfirmed = window.confirm(
+      "You will now be redirected to WhatsApp to book your appointment. Make sure WhatsApp is installed or accessible on your device. Proceed?"
+    );
+
+    if (userConfirmed) {
+      window.open(whatsappUrl, "_blank");
+    }
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    alert("Failed to book appointment. Please try again.");
   }
 };
+
 
   return (
     <div>
@@ -161,7 +185,7 @@ const handleBookAppointment = (phone) => {
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  handleBookAppointment(doc.phone);
+                                  handleBookAppointment(doc);
                                 }}
                               >
                                 Book Appointment

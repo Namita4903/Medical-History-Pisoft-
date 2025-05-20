@@ -124,8 +124,8 @@ const userId=localStorage.getItem("userId")
       key: "date",
       render: (text) => moment(text).format("YYYY-MM-DD"),
     },
-    { title: "Uploaded By", dataIndex: "uploadedBy", key: "uploadedBy" },
-    {
+  { title: "Uploaded Of Patient", dataIndex: "uploadedOfPatient", key: "uploadedOfPatient" },
+    { title: "Uploaded By Doctor", dataIndex: "uploadedByDoctor", key: "uploadedByDoctor" },    {
       title: "Action",
       key: "action",
       render: (_, record) => (
@@ -194,7 +194,7 @@ const userId=localStorage.getItem("userId")
         </Button>
       </form>
 
-      <h3>Uploaded Reports</h3>
+      <h3>dsds</h3>
       <Table columns={columns} dataSource={reports} rowKey="_id" />
 
       <Modal

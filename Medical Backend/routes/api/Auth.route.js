@@ -20,6 +20,10 @@ const getSingleReportsPatient = require("../../controllers/auth/getSingleReports
 const adminLogin = require("../../controllers/auth/adminLogin.js");
 const getAllowedDoctors = require("../../controllers/auth/getAllowedDoctors.js");
 const getPayment = require("../../controllers/auth/getPayment.js");
+const forgotPassword = require("../../controllers/auth/forgotPassword.js");
+const verifyPassword = require("../../controllers/auth/verifyPassword.js");
+const bookAppointment = require("../../controllers/auth/bookAppointement.js");
+const getAppointment = require("../../controllers/auth/getAppointment.js");
 
 
 
@@ -32,6 +36,8 @@ route.post("/login" , login);
 route.post("/report",report);
 route.post("/getUserReport",getUserReport);
 route.post("/google",googleLogin);
+route.post("/bookAppointment",bookAppointment);
+route.get("/getAppointment",getAppointment);
 route.post("/getPayment",getPayment);
 route.get("/getReportByDoctor/:id",getReportsByDoctor);
 route.get("/getReportByPatient/:id",getReportByPatient);
@@ -44,6 +50,8 @@ route.put("/updateUser/:id", updateUser);
 route.delete("/deleteUser/:id", deleteUser);
 route.post("/admin/login", adminLogin);
 route.post("/getAllowedDoctors", getAllowedDoctors);
+route.post("/forgotPassword",forgotPassword)
+route.post("/verifyPassword",verifyPassword)
 
 
 module.exports = route;

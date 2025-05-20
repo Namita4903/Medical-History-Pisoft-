@@ -16,7 +16,7 @@ const path = require('path');
 // Old
 // app.use(express.json());
 
-// New — increase limit to 50MB or more
+
 backend.use(express.json({ limit: '50mb' }));
 backend.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
@@ -32,7 +32,7 @@ backend.use("/api/contact", contactRoute);
 // backend.use("/api",uploadRoutes);
 // backend.use('/uploads', express.static('uploads'));
 
-
+// backend.use("/api/report", require("./routes/api/report.route"));
 
 
 mongoose.connect("mongodb+srv://mahajannamita2003:90zkozdP4u5obLyv@cluster0.icll5.mongodb.net/")

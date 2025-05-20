@@ -100,7 +100,8 @@ const ReportSection = () => {
       key: "date",
       render: (text) => moment(text).format("YYYY-MM-DD"),
     },
-    { title: "Uploaded By", dataIndex: "uploadedBy", key: "uploadedBy" },
+    { title: "Uploaded Of Patient", dataIndex: "uploadedOfPatient", key: "uploadedOfPatient" },
+    { title: "Uploaded By Doctor", dataIndex: "uploadedByDoctor", key: "uploadedByDoctor" },
     {
       title: "Action",
       key: "action",

@@ -144,7 +144,7 @@ const Users = () => {
       {loading ? (
         <Spin size="large" />
       ) : (
-        <Table dataSource={users} columns={columns} rowKey="_id" />
+        <Table dataSource={users?.users} columns={columns} rowKey="_id" />
       )}
 
       <Modal

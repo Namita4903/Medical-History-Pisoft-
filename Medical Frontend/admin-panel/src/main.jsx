@@ -8,6 +8,9 @@ import Admin from "../src/page/admin";
 import Doctors from "../src/page/doctors";
 import Users from "../src/page/users";
 import Login from "../src/page/login";
+import AdminReportsTable from "../src/page/reports"; 
+
+import AdminAppointments from "../src/page/appointments"; 
 
 import './index.css'
 
@@ -22,8 +25,9 @@ ReactDOM.createRoot(root).render(
       <Route path="/dashboard" element={<Dashboard/>} />
       <Route path="/doctors" element={<Doctors />} />
       <Route path="/users" element={<Users />} />
+      <Route path="reports" element={<AdminReportsTable />} /> 
       <Route path="/login" element={<Login />} />
-    
+    <Route path="/appointments" element={<AdminAppointments />} /> 
 
       </Routes>
       </BrowserRouter>

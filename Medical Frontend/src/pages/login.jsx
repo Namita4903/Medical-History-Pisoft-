@@ -154,7 +154,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Spin, notification } from 'antd';
+import { Button, Checkbox, Form, Input, Spin, notification,Modal } from 'antd';
 import { useNavigate } from 'react-router';
 import Illustration from '../assets/images/login6.jpg';
 import axiosInstance from "../../src/axiosinstance";
@@ -170,6 +170,15 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+
+  
+  const [isOTPModalVisible, setIsOTPModalVisible] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const openNotificationWithIcon = (type, title, description) => {
     api[type]({
@@ -233,6 +242,52 @@ const Login = () => {
     }, 1500);
   };
 
+
+  const showModal = () => setIsModalVisible(true);
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    
+  };
+
+  const handleSendResetLink = async () => {
+    if (!forgotEmail) {
+      return openNotificationWithIcon("warning", "Missing Email", "Please enter your email.");
+    }
+
+    try {
+      await axiosInstance.post(`${apiUrl}/api/auth/forgotPassword`, { email: forgotEmail });
+      setIsModalVisible(false);
+      setIsOTPModalVisible(true); 
+    } catch (error) {
+      openNotificationWithIcon("error", "Error", "Failed to send OTP. Try again.");
+    }
+  };
+
+  
+  const handleOTPSubmit = async () => {
+    if (!otp || !newPassword || !confirmPassword) {
+      return openNotificationWithIcon("warning", "Missing Fields", "Please fill all fields.");
+    }
+
+    if (newPassword !== confirmPassword) {
+      return openNotificationWithIcon("error", "Password Mismatch", "New and confirm passwords must match.");
+    }
+
+    try {
+      await axiosInstance.post(`${apiUrl}/api/auth/verifyPassword`, {
+        email: forgotEmail,
+        otp,
+        newPassword,
+        confirmPassword
+      });
+      openNotificationWithIcon("success", "Password Reset", "Password changed successfully.");
+      setIsOTPModalVisible(false);
+      
+    } catch (error) {
+      openNotificationWithIcon("error", "Reset Failed", error.response?.data?.message || "Invalid OTP or expired.");
+    }
+  };
+
   return (
     <>
       {contextHolder}
@@ -278,7 +333,8 @@ const Login = () => {
 
                     <Form.Item className="login-options">
                       <Checkbox>Remember me</Checkbox>
-                      <a href="#" className="forgot-password">Forgot Password?</a>
+                      <Button type="link" onClick={showModal}>Forgot password?</Button>
+                      {/* <a href="#" className="forgot-password">Forgot Password?</a> */}
                     </Form.Item>
 
                     <Form.Item>
@@ -298,6 +354,47 @@ const Login = () => {
             </div>
           </div>
           <Footer />
+
+          <Modal
+        title="Reset Your Password"
+        visible={isModalVisible}
+        onOk={handleSendResetLink}
+        onCancel={handleCancel}
+        okText="Send OTP"
+      >
+        <Input
+          placeholder="Enter your email"
+          value={forgotEmail}
+          onChange={(e) => setForgotEmail(e.target.value)}
+        />
+      </Modal>
+
+      
+      <Modal
+        title="Verify OTP & Reset Password"
+        visible={isOTPModalVisible}
+        onOk={handleOTPSubmit}
+        onCancel={() => setIsOTPModalVisible(false)}
+        okText="Reset Password"
+      >
+        <Input
+          placeholder="Enter OTP"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          style={{ marginBottom: '10px' }}
+        />
+        <Input.Password
+          placeholder="New Password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          style={{ marginBottom: '10px' }}
+        />
+        <Input.Password
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+      </Modal>
         </>
       )}
     </>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Card, Statistic, Row, Col, Table } from "antd";
 import {
   UserOutlined,
@@ -10,6 +10,7 @@ import {
   PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from "recharts";
+import axios from "axios";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -39,6 +40,67 @@ const columns = [
 ];
 
 const Dashboard = () => {
+    const [user,setUsers]=useState("")
+      const [reportData, setReportData] = useState([]);
+      const [appointment, setAppointments] = useState([]);
+    
+  const [reports,setReports]=useState()
+    const fetchDashBoardData = async () => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:5001/api/auth/getUsers", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response)
+      setUsers(response.data);
+      //  const response1 = await axios.get("http://localhost:5001/api/auth/getUserReport", {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      // setReports(response1.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      message.error("Failed to fetch users");
+    }
+  };
+
+  useEffect(() => {
+    fetchDashBoardData();
+  }, []);
+  
+  const fetchReports = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5001/api/report/getAllReports"
+      );
+    //   const formatted = response.data.map((report, index) => ({
+    //     key: report._id || index,
+    //     ...report,
+    //   }));
+      setReportData(response.data);
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+      message.error("Failed to load reports.");
+    }
+  };
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+  const fetchUserAppointments = async () => {
+  try {
+
+    const response = await axios.get("http://localhost:5001/api/auth/getAppointment");
+
+    console.log("User appointments:", response.data);
+    setAppointments(response.data)
+  } catch (error) {
+    console.error("Error fetching user appointments:", error);
+  }
+};
+useEffect(() => {
+  fetchUserAppointments();
+}, []);
   return (
     <div>
       <Row gutter={16}>
@@ -46,7 +108,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Total Patients"
-              value={400}
+              value={user.count}
               prefix={<UserOutlined />}
               valueStyle={{ color: "#3f8600" }}
             />
@@ -66,7 +128,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Appointments"
-              value={240}
+              value={appointment.length}
               prefix={<ScheduleOutlined />}
               valueStyle={{ color: "#8338ec" }}
             />
@@ -76,7 +138,7 @@ const Dashboard = () => {
           <Card>
             <Statistic
               title="Reports"
-              value={78}
+              value={reportData?.reportsCount}
               prefix={<FileDoneOutlined />}
               valueStyle={{ color: "#ff006e" }}
             />

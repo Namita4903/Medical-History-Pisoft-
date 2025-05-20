@@ -175,8 +175,9 @@ import { useNavigate } from "react-router";
 import logo from "../assets/image.png";
 import Users from "./users";
 import Login from "./login";
+import AdminReportsTable from "./reports"; 
 import Dashboard from "./dashboard";
-
+import AdminAppointments from "./appointments";
 
 const { Header, Content, Sider } = Layout;
 
@@ -211,9 +212,9 @@ const Admin = () => {
       case "doctors":
         return <h2>Doctors Section (To be implemented)</h2>;
       case "appointments":
-        return <h2>Appointments Section (To be implemented)</h2>;
+        return <AdminAppointments/>
       case "reports":
-        return <h2>Reports Section (To be implemented)</h2>;
+        return <AdminReportsTable/>
       default:
         return <h2>Select a section</h2>;
     }
